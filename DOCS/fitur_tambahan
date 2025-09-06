@@ -1,0 +1,58 @@
+Tambah Menu kasir :
+
+ada 2 versi : customer dengan BELI SPAREPARTS SAJA & customer dengan SERVIS + PENGGANTIAN PARTS.
+
+
+-Beli Parts saja, Hanya cukup data Nama - No Hp - Alamat & data barang yg di beli.
+
+-Servis + Penggantian parts maka rincian nya yg di butuhkan berikut :
+-KASIR
+>>DATA CUSTOMER (Bisa di export ke excel & data customer yg repeat order bisa di lacak,otomatis muncul)
+-No HP-No Polisi-Jenis Kendaraan-Kilometer Kendaraan-Tahun Kendaraan
+-Menu kasir (TAB) bisa di buat untuk bbrapa (contoh kasus untuk keperluan saat 1 motor sedang di servis maka motor 2-3-4 sudah bisa di imput data penjualan nya oleh admin, sehingga ketika motor nya selesai di servis, admin tinggal cetak faktur)
+-Menu kasir ada untuk jenis customer yg melakukan Servis Berat (Overhole) (tdk selesai 1 hari) sehingga ada data nya menjadi faktur yg terpending.
+
+
+>>DATA FAKTUR (No Faktur bisa otomatis No nya update 1-2-3-4 dst, tanggal dan hari nya juga update otomatis)
+-Tanggal (otomatis)
+-No faktur (otomatis)
+-Metode Pembayaran (Cash-Qris-TF-EDC)
+-Penjualan Barang (via scan)
+-Jasa Mekanik Servis (bisa di imput manual bisa di buat list nya, sehingga nanti tinggal klik saja, tanpa ketik manual)
+-Nama Mekanik yang servis
+-
+
+
+
+>>LAPORAN KASIR
+
+-Real Time (ada dashboard yang bisa di klik untuk melihat hasil pendapatan toko : Pendapatan Jumlah Motor :, Penjualan Parts :, Pendapatan Jasa Mekanik :, & Total Omset :, contoh seperti versi punya shopee atau tiktok)
+
+-Data Penjualan bisa menampilkan Rekap Rincian seperti Total Pembayaran dari Qris ...TF...Cash..EDC...
+
+-Data Penjualan Harian (Bisa di export, ada harga Modal & harga jual, sehingga bisa langsung tau brapa keuntungan per hari : excel & pdf)
+
+-Data Penjualan Bulanan (Bisa di export, ada harga Modal & harga jual, sehingga bisa langsung tau brapa keuntungan per hari : excel & pdf)
+
+
+>>saat selesai Transaksi, bisa di buat Faktur tersebut menjadi JPG untuk di share ke WA customer.
+
+>>faktur bisa di print ke jenis printer thermal (EPSON TMT82X) kertas 80 x 80 mm.
+
+Kasir Untuk Kebutuhan Bengkel Speda Motor
+-Jumlah Motor (Unit Entry)
+-Penjualan Spareparts
+-Pendapatan Jasa Mekanik
+
+
+
+
+
+Kalau Servis & Penggantian Parts ini nanti bisa buat model pakai input master nya dlu mas,, jadi ntar waktu mau proses faktur / pembayaran tinggal klik” saja,
+
+Atau jasa nya bisa manual kolom kosong di sediakan untuk ntar admin kami yg isi manual boleh juga mas
+
+
+
+
+Oiya ntar di invoice nya jangan lupa alamat & logo kami ya mas, bisa di input sendiri
