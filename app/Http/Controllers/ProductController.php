@@ -54,20 +54,20 @@ class ProductController extends Controller
         $products = DB::table('products')
                     ->leftJoin("categories", "products.category_id", "=", "categories.category_id")
                     ->select("products.*", "categories.*");
-                    
+
         $productsExport = $products;
-        
+
         if(!empty($cat)){
             $products = $products->orWhere([["categories.category_id", $cat], ["products.warehouse_id", $warehouse_id]]);
             $productsExport = $productsExport->orWhere([["categories.category_id", $cat], ["products.warehouse_id", $warehouse_id]]);
         }
-        
+
         if(!empty($search)){
             $products = $products
                         ->orWhere([["products.product_name", "LIKE", "%".$search."%"], ["products.warehouse_id", $warehouse_id]])
                         ->orWhere([["products.product_code", "LIKE", "%".$search."%"], ["products.warehouse_id", $warehouse_id]]);
         }
-        
+
         if(!empty($sort)){
             if($sort == "category_az"){
                 $products = $products->orderBy("categories.category_name", "asc");
@@ -223,11 +223,11 @@ class ProductController extends Controller
         $services = DB::table('services')
                     ->select("services.*")
                     ->where("services.warehouse_id", $warehouse_id);
-        
+
         if(!empty($search)){
             $services = $services->orWhere("services.nama_jasa", "LIKE", "%".$search."%");
         }
-        
+
         $warehouse = $this->getWarehouse();
 
         if($req->format == "json"){
@@ -258,7 +258,7 @@ class ProductController extends Controller
         $req->validate([
             'nama_jasa'     => 'required',
             'biaya'         => 'required|numeric',
-            
+
         ],
         [
             'nama_jasa.required'        => 'Nama Jasa Servis belum diisi!',
@@ -290,7 +290,7 @@ class ProductController extends Controller
                 $req->session()->flash('error', "Jasa Servis gagal diubah!");
             }
         }
-        
+
         return redirect()->back();
     }
 
@@ -323,12 +323,12 @@ class ProductController extends Controller
         $products = DB::table('products_wip')
                     ->leftJoin("products", "products_wip.product_id", "=", "products.product_id")
                     ->select("products_wip.*", "products.*");
-        
+
         if(!empty($search)){
             $products = $products->orWhere([["products.product_name", "LIKE", "%".$search."%"], ["status", 0], ["products.warehouse_id", $warehouse_id]])
                         ->orWhere([["products.product_code", "LIKE", "%".$search."%"], ["status", 0], ["status", 0], ["products.warehouse_id", $warehouse_id]]);
         }
-        
+
         $products = $products->where([["products_wip.status", 0], ["products_wip.warehouse_id", $warehouse_id]])->orderBy("products_wip.product_wip_id", "desc")->paginate(50);
 
         $warehouse = $this->getWarehouse();
@@ -348,12 +348,12 @@ class ProductController extends Controller
         $products = DB::table('products_wip')
                     ->leftJoin("products", "products_wip.product_id", "=", "products.product_id")
                     ->select("products_wip.*", "products.*");
-        
+
         if(!empty($search)){
             $products = $products->orWhere([["products.product_name", "LIKE", "%".$search."%"], ["status", 1]])
                         ->orWhere([["products.product_code", "LIKE", "%".$search."%"], ["status", 1]]);
         }
-        
+
         $products = $products->where([["products_wip.status", 1], ["products_wip.warehouse_id", $warehouse_id]])->orderBy("products_wip.date_out", "desc");
 
         $warehouse = $this->getWarehouse();
@@ -393,13 +393,13 @@ class ProductController extends Controller
         }
 
         $product = DB::table('products')->where([["product_code", $req->pcode], ["warehouse_id", $warehouse_id]])->select("product_id", "product_code","product_name")->first();
-        
+
         $result = ["status" => 0, "data" => null];
 
         if(!empty($product)){
             $result = ["status" => 1, "data" => $product];
         }
-        
+
         return response()->json($result);
     }
 
@@ -411,13 +411,13 @@ class ProductController extends Controller
         }
 
         $nopol = DB::table('orders')->where([["kendaraan_nopol", $req->nopol], ["warehouse_id", $warehouse_id]])->select("customer_name", "customer_nohp","customer_alamat", "kendaraan_jenis", "kendaraan_km", "kendaraan_tahun")->orderBy("order_id", "desc")->first();
-        
+
         $result = ["status" => 0, "data" => null];
 
         if(!empty($nopol)){
             $result = ["status" => 1, "data" => $nopol];
         }
-        
+
         return response()->json($result);
     }
 
@@ -434,7 +434,7 @@ class ProductController extends Controller
             'purchase_price'    => 'required|numeric',
             'sale_price'        => 'nullable|numeric',
             'category'          => 'required|exists:categories,category_id',
-            
+
         ],
         [
             'product_code.required'     => 'Product Code belum diisi!',
@@ -474,7 +474,7 @@ class ProductController extends Controller
                 $req->session()->flash('error', "Product gagal diubah!");
             }
         }
-        
+
         return redirect()->back();
     }
 
@@ -486,13 +486,13 @@ class ProductController extends Controller
             "file.required" => "File belum dipilih!",
             "file.mimes"    => "File harus dalam format CSV/XLS/XLSX!"
         ]);
- 
+
 		$file = $req->file('file');
- 
+
 		$filename = rand()."-".$file->getClientOriginalName();
- 
+
 		$file->move('upload/import',$filename);
- 
+
 		$import = Excel::toArray(new ProductsImport, public_path('upload/import/'.$filename));
 
         $data = [];
@@ -533,7 +533,7 @@ class ProductController extends Controller
                 }
             }
         }
-        
+
         if($doneImport == $countImport){
             $req->session()->flash('success', "Semua data berhasil diimport.");
         } else {
@@ -557,7 +557,7 @@ class ProductController extends Controller
         $req->validate([
             'product_code'      => 'required|exists:products,product_code',
             'pamount'           => 'required|numeric',
-            
+
         ],
         [
             'product_code.required' => 'Product Code belum diisi!',
@@ -574,7 +574,7 @@ class ProductController extends Controller
         if(!empty($req->wip_date)){
             $req->validate([
                 'wip_date'          => 'date_format:m/d/Y H:i:s',
-                
+
             ],
             [
                 'wip_date.date_format'      => 'Format tanggal salah! Format: BLN/TGL/THN JAM:MNT:DTK.',
@@ -661,7 +661,7 @@ class ProductController extends Controller
         $req->validate([
             'wip_id'    => 'required|exists:products_wip,product_wip_id',
             'amount'    => 'required|numeric',
-            
+
         ],
         [
             'wip_id.required'   => 'WIP ID tidak ditemukan!',
@@ -725,13 +725,13 @@ class ProductController extends Controller
             "file.required" => "File belum dipilih!",
             "file.mimes"    => "File harus dalam format CSV/XLS/XLSX!"
         ]);
- 
+
 		$file = $req->file('file');
- 
+
 		$filename = rand()."-".$file->getClientOriginalName();
- 
+
 		$file->move('upload/import',$filename);
- 
+
 		$import = Excel::toArray(new ProductsImport, public_path('upload/import/'.$filename));
 
         $data = [];
@@ -775,7 +775,7 @@ class ProductController extends Controller
                 }
             }
         }
-        
+
         if($doneImport == $countImport){
             $req->session()->flash('success', "Semua data berhasil diimport.");
         } else {
@@ -806,7 +806,7 @@ class ProductController extends Controller
         } else {
             $warehouse_id = DB::table('warehouse')->first()->warehouse_id;
         }
-        
+
         if(!empty($amount)){
             $data = [
                 "user_id"           => Auth::user()->id,
@@ -855,7 +855,7 @@ class ProductController extends Controller
         } else {
             $result = ["status" => 0, "message" => "Amount belum diisi!"];
         }
-        
+
         resp:
         return response()->json($result);
     }
@@ -964,7 +964,7 @@ class ProductController extends Controller
 
         $req->validate([
             'category_name'      => ['required']
-            
+
         ],
         [
             'category_name.required'     => 'Nama Kategori belum diisi!',
@@ -992,7 +992,7 @@ class ProductController extends Controller
                 $req->session()->flash('error', "Kategori gagal diubah!");
             }
         }
-        
+
         return redirect()->back();
     }
 
@@ -1039,7 +1039,7 @@ class ProductController extends Controller
 
         $req->validate([
             'city_name'      => ['required']
-            
+
         ],
         [
             'city_name.required'     => 'Nama Kota belum diisi!',
@@ -1067,7 +1067,7 @@ class ProductController extends Controller
                 $req->session()->flash('error', "Kota gagal diubah!");
             }
         }
-        
+
         return redirect()->back();
     }
 
@@ -1142,7 +1142,7 @@ class ProductController extends Controller
     public function warehouse_select(Request $req){
         $req->validate([
             'warehouse_id'          => 'exists:warehouse,warehouse_id',
-            
+
         ],
         [
             'warehouse_id.exists'   => 'Warehouse tidak ditemukan!',
@@ -1164,7 +1164,7 @@ class ProductController extends Controller
             'address'   => 'required',
             'nohp'      => 'required',
             'city'      => 'required|exists:city,city_id',
-            
+
         ],
         [
             'name.required'     => 'Nama Warehouse belum diisi!',
@@ -1198,7 +1198,7 @@ class ProductController extends Controller
                 $req->session()->flash('error', "Warehouse gagal diubah!");
             }
         }
-        
+
         return redirect()->back();
     }
 
@@ -1242,7 +1242,7 @@ class ProductController extends Controller
         }
 
         $tgl_masuk = $req->tgl_masuk;
-        
+
         if(empty($tgl_masuk)){
             $tgl_masuk = date("Y-m-d H:i:s");
         }
@@ -1339,7 +1339,7 @@ class ProductController extends Controller
                         ->leftJoin("products", "products.product_id", "orders_detail.product_id")
                         ->leftJoin("categories", "categories.category_id", "products.category_id")
                         ->where([["orders.order_id", $order_id], ["orders_detail.type", 0], ["orders.status", 0]])->orderBy("orders.order_id", "asc");
-            
+
             $detail = DB::table("orders_detail")
                         ->select("services.nama_jasa as product_name", "services.nama_jasa as product_code", "services.biaya as sale_price", "orders_detail.*")
                         ->leftJoin("orders", "orders.order_id", "orders_detail.order_id")
@@ -1357,7 +1357,7 @@ class ProductController extends Controller
                             ->leftJoin("products", "products.product_id", "orders_detail.product_id")
                             ->leftJoin("categories", "categories.category_id", "products.category_id")
                             ->where([["orders_detail.type", 0], ["orders.order_id", $order_id]])->orderBy("orders.order_id", "asc");
-                
+
                 $detail = DB::table("orders_detail")
                             ->select("services.nama_jasa as product_name", "services.nama_jasa as product_code", "services.biaya as sale_price", "services.biaya as purchase_price", "orders_detail.*")
                             ->leftJoin("orders", "orders.order_id", "orders_detail.order_id")
@@ -1401,7 +1401,7 @@ class ProductController extends Controller
             $req->validate([
                 'product_id'        => 'exists:products,product_id',
                 'amount'            => 'required|numeric',
-                
+
             ],
             [
                 'product_id.exists'     => 'Item tidak tersedia!',
@@ -1415,7 +1415,7 @@ class ProductController extends Controller
 
         $req->validate([
             'order_id'          => 'required|exists:orders,order_id',
-            
+
         ],
         [
             'order_id.required'     => 'Terjadi kesalahan saat memproses permintaan Anda! Mohon coba lagi! (Error Code: 1)',
@@ -1423,7 +1423,7 @@ class ProductController extends Controller
         ]);
 
         $price      = null;
-        
+
 
         if($type == 0){
             $product    = DB::table("products")->where("product_id", $product_id)->first();
@@ -1440,7 +1440,7 @@ class ProductController extends Controller
             if(!empty($product)){
                 $price = $product->biaya;
             }
-            
+
             $stock          = 1;
             $amount         = 1;
         }
@@ -1516,7 +1516,7 @@ class ProductController extends Controller
         } else {
             $req->session()->flash('error', "Jumlah melebihi stok yang tersedia! (Stok tersedia: ".$stock.")");
         }
-        
+
         return redirect()->back();
     }
 
@@ -1568,7 +1568,7 @@ class ProductController extends Controller
 
             $newOrder   = DB::table('orders')->insertGetId($newData);
             $price      = null;
-            
+
             $items      = DB::table("orders_detail")->where("order_id", $order_id)->get();
 
             if($type == 0){
@@ -1592,7 +1592,7 @@ class ProductController extends Controller
                     if(!empty($product)){
                         $price = $product->biaya;
                     }
-                    
+
                     $stock          = 1;
                     $amount         = 1;
                 }
@@ -1628,7 +1628,7 @@ class ProductController extends Controller
         } else {
             $resp   = ["status" => 0, "message" => "Order #".$order_id." tidak ditemukan!"];
         }
-        
+
         return response()->json($resp);
     }
 
@@ -1648,7 +1648,7 @@ class ProductController extends Controller
                 'customer_name' => 'required',
                 'customer_nohp' => 'required|numeric',
                 'alamat'        => 'required',
-                
+
             ],
             [
                 'customer_name.required'    => 'Nama Customer belum diisi!',
@@ -1668,7 +1668,7 @@ class ProductController extends Controller
                 'jenis_kendaraan'   => 'required',
                 'km_kendaraan'  => 'required',
                 'tahun_kendaraan'   => 'required',
-                
+
             ],
             [
                 'nopol.required'                => 'No. Polisi belum diisi!',
@@ -1753,7 +1753,7 @@ class ProductController extends Controller
         } else {
             $warehouse_id = DB::table('warehouse')->first()->warehouse_id;
         }
-        
+
         $warehouse = $this->getWarehouse();
 
         $orders = DB::table('orders')->where("orders.warehouse_id" , $warehouse_id);
@@ -1767,7 +1767,7 @@ class ProductController extends Controller
         }
 
         $orders = $orders->orderBy("order_id", "desc")->orderBy("status", "desc")->paginate(50);
-        
+
         return View::make('order_list')->with(compact("orders", "warehouse"));
     }
 
@@ -1798,7 +1798,7 @@ class ProductController extends Controller
 
             $result = ["status" => 1, "message" => "Rp ".number_format($kembalian, 0, ',', '.')];
         }
-        
+
         return response()->json($result);
     }
 
@@ -1817,7 +1817,7 @@ class ProductController extends Controller
                     ->leftJoin("products", "products.product_id", "orders_detail.product_id")
                     ->leftJoin("categories", "categories.category_id", "products.category_id")
                     ->where([["orders.order_id", $order_id], ["orders_detail.type", 0]])->orderBy("orders.order_id", "asc");
-        
+
         $orderDetail = DB::table("orders_detail")
                     ->select("services.nama_jasa as product_name", "services.nama_jasa as product_code", "services.biaya as sale_price", "orders_detail.*")
                     ->leftJoin("orders", "orders.order_id", "orders_detail.order_id")
@@ -1883,19 +1883,21 @@ class ProductController extends Controller
                         ->leftJoin("orders_detail", "orders_detail.order_id", "=", "orders.order_id")
                         ->where("orders_detail.type", 0)
                         ->where("orders.status" , 3)
-                        ->where("orders.warehouse_id" , $warehouse_id);
+                        ->where("orders.warehouse_id" , $warehouse_id)
+                        ->when($req->filled('metode_pembayaran'), fn($q) => $q->where('metode_pembayaran', $req->metode_pembayaran));
         $total_jasa     = DB::table("orders")
                         ->leftJoin("orders_detail", "orders_detail.order_id", "=", "orders.order_id")
                         ->where("orders_detail.type", 1)
                         ->where("orders.status" , 3)
-                        ->where("orders.warehouse_id" , $warehouse_id);
+                        ->where("orders.warehouse_id" , $warehouse_id)
+                        ->when($req->filled('metode_pembayaran'), fn($q) => $q->where('metode_pembayaran', $req->metode_pembayaran));
         if($metode_pembayaran != null){
             $orders         = DB::table('orders')->where([["orders.warehouse_id" , $warehouse_id], ["metode_pembayaran", $metode_pembayaran]]);
         } else {
             $orders         = DB::table('orders')->where("orders.warehouse_id" , $warehouse_id);
         }
 
-        
+
         if(!empty($startDate) && !empty($endDate)){
             $total_parts    = $total_parts->whereBetween("orders.tgl_invoice", [$startDate." 00:00:00", $endDate." 23:59:59"]);
             $total_jasa     = $total_jasa->whereBetween("orders.tgl_invoice", [$startDate." 00:00:00", $endDate." 23:59:59"]);
@@ -1959,7 +1961,7 @@ class ProductController extends Controller
                 "JENIS KENDARAAN"   => $o->kendaraan_jenis,
                 "KM KENDARAAN"      => $o->kendaraan_km,
                 "TAHUN KENDARAAN"   => $o->kendaraan_tahun,
-                "METODE PEMBAYARAN" => $metodePembayaran[$o->metode_pembayaran],
+                "METODE PEMBAYARAN" => $metodePembayaran[$o->metode_pembayaran ?? 0],
                 "TOTAL PEMBELIAN"   => $o->total_harga2,
                 "TOTAL HARGA JUAL"  => $o->total_harga,
                 "TOTAL KEUNTUNGAN"  => $o->total_harga-$o->total_harga2,
@@ -1968,7 +1970,7 @@ class ProductController extends Controller
             $i++;
         }
 
-        
+
         $grandTotalPembelian    = 0;
         foreach($orders as $o){
             $grandTotalPembelian += $o->total_harga;

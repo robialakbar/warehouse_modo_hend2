@@ -349,8 +349,8 @@ $order_status = $order->status;
                     <div class="form-group row">
                         <label for="metode_pembayaran" class="col-sm-5 col-form-label">Metode Pembayaran</label>
                         <div class="col-sm-7">
-                            <select class="form-control select2" style="width: 100%;" id="metode_pembayaran" name="metode_pembayaran">
-                                <option></option>
+                            <select class="form-control select2" style="width: 100%;" id="metode_pembayaran" name="metode_pembayaran" required placeholder="">
+                                <option disabled value="" selected>-- Pilih Metode Pembayaran --</option>
                                 <option value="0">Tunai</option>
                                 <option value="1">QRIS</option>
                                 <option value="2">Transfer Bank</option>
@@ -391,7 +391,7 @@ $order_status = $order->status;
             $('.select2').select2({
                 theme: 'bootstrap4'
             });
-            
+
             $("#order_type").val("{{ $order->order_type }}");
             @if($order_status != 0)
             $("#order_type").attr("disabled", true);
@@ -523,6 +523,10 @@ $order_status = $order->status;
         }
 
         function pembayaran(){
+            if($("#metode_pembayaran").val() == null){
+                toastr.error("Metode pembayaran belum dipilih!");
+                return false;
+            }
             $.ajax({
                 url: "{{ route('order.payment')}}",
                 type: "POST",
