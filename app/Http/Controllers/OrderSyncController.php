@@ -20,7 +20,7 @@ class OrderSyncController extends Controller
         $order = Order::with('details')->findOrFail($order_id);
 
         // Update total_harga2 di orders
-        $order->total_harga2 = $order->calculateTotalFromDetails();
+        $order->total_harga = $order->calculateTotalFromDetails();
         $order->save();
 
         return redirect()->back()->with('success', 'Order berhasil disinkronisasi.');
