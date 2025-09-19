@@ -1359,7 +1359,7 @@ class ProductController extends Controller
                             ->where([["orders_detail.type", 0], ["orders.order_id", $order_id]])->orderBy("orders.order_id", "asc");
 
                 $detail = DB::table("orders_detail")
-                            ->select("services.nama_jasa as product_name", "services.nama_jasa as product_code", "services.biaya as sale_price", "services.biaya as purchase_price", "orders_detail.*")
+                            ->select("services.nama_jasa as product_name", "services.nama_jasa as product_code", "orders_detail.price as sale_price", "orders_detail.price as purchase_price", "orders_detail.*")
                             ->leftJoin("orders", "orders.order_id", "orders_detail.order_id")
                             ->leftJoin("services", "services.service_id", "orders_detail.product_id")
                             ->where([["orders_detail.type", 1], ["orders.order_id",$order_id]])->orderBy("orders.order_id", "asc")
