@@ -25,10 +25,8 @@
                     <div style="margin: 20px 0px;">
                         <input type="text" name="daterange" value="" />
                         <button class="btn btn-success btn-sm" id="filter" onclick="filter()"><i class="fa fa-filter"></i></button>
+                        <a href="{{ route('orders.sync') }}" class="btn btn-info" style="margin: 20px 0px;">Refresh SYNC ORDER</a>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <a href="{{ route('orders.sync') }}" class="btn btn-info" style="margin: 20px 0px;">Refresh SYNC ORDER</a>
                 </div>
             </div>
             <div class="row">
