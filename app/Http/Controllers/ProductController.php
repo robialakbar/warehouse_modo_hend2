@@ -1918,9 +1918,9 @@ class ProductController extends Controller
             }
         }
 
-
+        // dd($orders->sum('diskon'));
         $total_qty_parts    = $total_parts->get()->count();
-        $total_biaya_parts  = $total_parts->sum(DB::raw('orders_detail.price * orders_detail.amount'));
+        $total_biaya_parts  = $total_parts->sum(DB::raw('orders_detail.price * orders_detail.amount')) - $orders->sum('diskon');
         $total_parts        = $total_parts->sum("orders_detail.amount");
 
 
