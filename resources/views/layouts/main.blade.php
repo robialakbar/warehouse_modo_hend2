@@ -113,12 +113,6 @@
                     <p class="text">Categories</p>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ (Route::current()->getName() == 'orders.sync')? 'active':''}}" href="{{ route('orders.sync') }}">
-                    <i class="nav-icon fa fa-refresh"></i>
-                    <p class="text">Refresh SYNC ORDER</p>
-                </a>
-            </li>
             @if(Auth::user()->role == 0)
             <li class="nav-item">
                 <a class="nav-link {{ (Route::current()->getName() == 'city')? 'active':''}}" href="{{ route('city') }}">
