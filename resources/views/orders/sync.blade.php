@@ -22,6 +22,7 @@
                     <tr>
                         <th>Order ID</th>
                         <th>Customer</th>
+                        <th>no invoice</th>
                         <th>Total di Order</th>
                         <th>Total dari Detail</th>
                         <th>Selisih</th>
@@ -34,6 +35,7 @@
                             $calculatedTotal = $order->details->sum(function($detail) {
                                 return $detail->price * $detail->amount;
                             });
+                            // dd($order->details, $calculatedTotal);
                             $difference = $calculatedTotal - $order->total_harga;
                         @endphp
                         <tr>
