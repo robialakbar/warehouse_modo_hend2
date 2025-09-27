@@ -36,8 +36,9 @@
                                 return $detail->price * $detail->amount;
                             });
                             // dd($order->details, $calculatedTotal);
-                            $difference = $calculatedTotal - $order->total_harga;
+                            $difference = $calculatedTotal - $order->total_harga - $order->diskon;
                         @endphp
+                        @if($difference != 0)
                         <tr>
                             <td>{{ $order->order_id }}</td>
                             <td>{{ $order->customer_name }}</td>
@@ -53,6 +54,7 @@
                                 </a>
                             </td>
                         </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>

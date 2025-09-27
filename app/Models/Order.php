@@ -35,7 +35,7 @@ class Order extends Model
     {
         return $this->details->sum(function ($detail) {
             return $detail->price * $detail->amount;
-        });
+        }) - $this->diskon;
     }
 
     /**
@@ -52,7 +52,7 @@ class Order extends Model
     public function scopeNotSynced($query)
     {
         return $query->whereHas('details', function ($q) {
-            $q->selectRaw('order_id, SUM(price * amount) as total')->groupBy('order_id')->havingRaw('total != orders.total_harga');
+            $q->selectRaw('order_id, SUM(price * amount) as total')->groupBy('order_id')->havingRaw('total != (orders.total_harga - diskon)');
         });
     }
 }

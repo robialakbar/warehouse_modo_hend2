@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class OrderSyncController extends Controller
 {
     public function index()
     {
         // Ambil semua order yang memiliki ketidaksesuaian total
-        $orders = Order::with('details')->where('total_harga', '!=', 0)->notSynced()->get();
+        $orders = Order::with('details')->where('total_harga', '!=', 0)->get();
 
         return view('orders.sync', compact('orders'));
     }
@@ -19,9 +20,18 @@ class OrderSyncController extends Controller
     {
         $order = Order::with('details')->findOrFail($order_id);
 
-        // Update total_harga2 di orders
+        $oldTotal = $order->total_harga;
         $order->total_harga = $order->calculateTotalFromDetails();
         $order->save();
+
+        // log
+        Log::info('Order disinkronisasi', [
+            'order_id' => $order->order_id,
+            'old_total' => $oldTotal,
+            'new_total' => $order->calculateTotalFromDetails(),
+            'user_id' => auth()->id(),
+            'timestamp' => now()->toDateTimeString(),
+        ]);
 
         return redirect()->back()->with('success', 'Order berhasil disinkronisasi.');
     }
@@ -33,11 +43,22 @@ class OrderSyncController extends Controller
 
         foreach ($orders as $order) {
             $calculatedTotal = $order->calculateTotalFromDetails();
-            // dd($calculatedTotal, $order->total_harga);
+
             if ($calculatedTotal != $order->total_harga) {
+                $oldTotal = $order->total_harga;
+
                 $order->total_harga = $calculatedTotal;
                 $order->save();
                 $count++;
+
+                // log
+                Log::info('Order disinkronisasi', [
+                    'order_id' => $order->order_id,
+                    'old_total' => $oldTotal,
+                    'new_total' => $calculatedTotal,
+                    'user_id' => auth()->id(),
+                    'timestamp' => now()->toDateTimeString(),
+                ]);
             }
         }
 
