@@ -28,6 +28,11 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class, 'order_id', 'order_id');
     }
 
+    public function detailProducts()
+    {
+        return $this->hasMany(OrderDetail::class, 'order_id', 'order_id')->where('type', 0);
+    }
+
     /**
      * Hitung total dari detail order
      */

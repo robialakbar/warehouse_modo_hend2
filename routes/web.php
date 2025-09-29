@@ -123,5 +123,6 @@ Route::prefix('orders')->group(function () {
     Route::get('/sync', [OrderSyncController::class, 'index'])->name('orders.sync');
     Route::get('/sync/{order_id}', [OrderSyncController::class, 'sync'])->name('orders.sync.single');
     Route::get('/sync-all', [OrderSyncController::class, 'syncAll'])->name('orders.sync.all');
+    Route::get('/sync-purcase-order', [OrderSyncController::class, 'syncPurcasePrice'])->name('orders.sync.purcase_price');
     Route::get('/detail/{order_id}', [OrderSyncController::class, 'show'])->name('orders.show');
 });

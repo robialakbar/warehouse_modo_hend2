@@ -72,4 +72,27 @@ class OrderSyncController extends Controller
         $order = Order::with('details')->findOrFail($order_id);
         return view('orders.show', compact('order'));
     }
+
+    public function syncPurcasePrice()
+    {
+        $order = Order::with('detailProducts.product')->whereColumn('total_harga', 'total_harga2')->has('detailProducts')->where('status', 3)->get();
+        $count = 0;
+        foreach ($order as $o) {
+            $totalPurchasePrice = $o->detailProducts->sum(fn($d) => $d->product->purchase_price * $d->amount);
+            // log
+            Log::info('Order disinkronisasi', [
+                'order_id' => $o->order_id,
+                'totalPurchase' => $totalPurchasePrice,
+                'old_total' => $o->total_harga2,
+                'user_id' => auth()->id(),
+                'timestamp' => now()->toDateTimeString(),
+            ]);
+            $o->total_harga2 = $totalPurchasePrice;
+            $o->save();
+            $count++;
+        }
+        return redirect()
+            ->back()
+            ->with('success', "{$count} order berhasil disinkronisasi.");
+    }
 }

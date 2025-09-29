@@ -1352,7 +1352,7 @@ class ProductController extends Controller
             $order_id   = $order->order_id;
             if($order){
                 $detail = DB::table("orders_detail")
-                            ->select("products.product_name", "products.product_code", "orders_detail.price as sale_price", "orders_detail.price as purchase_price", "orders_detail.*",)
+                            ->select("products.product_name", "products.product_code", "orders_detail.price as sale_price", "products.purchase_price as purchase_price", "orders_detail.*",)
                             ->leftJoin("orders", "orders.order_id", "orders_detail.order_id")
                             ->leftJoin("products", "products.product_id", "orders_detail.product_id")
                             ->leftJoin("categories", "categories.category_id", "products.category_id")

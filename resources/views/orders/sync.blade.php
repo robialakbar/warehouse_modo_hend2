@@ -15,6 +15,9 @@
             <a href="{{ route('orders.sync.all') }}" class="btn btn-primary" onclick="return confirm('Yakin ingin sinkronisasi semua order?')">
                 <i class="fas fa-sync"></i> Sinkronisasi Semua
             </a>
+            <a href="{{ route('orders.sync.purcase_price') }}" class="btn btn-warning" onclick="return confirm('Yakin ingin sinkronisasi semua order?')">
+                <i class="fas fa-sync"></i> Sinkronisasi Purcase Price Semua
+            </a>
         </div>
         <div class="card-body">
             <table class="table table-bordered">
