@@ -1932,7 +1932,11 @@ class ProductController extends Controller
         $unit_entry         = $orders->get()->count();
 
         $orders_tmp         = $orders->get();
-        $orders             = $orders->orderBy("orders.order_id", "desc")->paginate(20);
+        if($req->filled('format')){
+            $orders             = $orders->orderBy("orders.order_id", "desc")->get();
+        }else{
+            $orders             = $orders->orderBy("orders.order_id", "desc")->paginate(20);
+        }
 
         $laporan = [
             "unit_entry"        => number_format($unit_entry, 0, ",", "."),
