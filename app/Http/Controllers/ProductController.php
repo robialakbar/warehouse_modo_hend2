@@ -871,14 +871,10 @@ class ProductController extends Controller
         }
 
         $history = DB::table('stock')
-                    ->leftJoin("products", "stock.product_id", "=", "products.product_id")
-                    ->leftJoin("users", "stock.user_id", "=", "users.id")
-                    ->select("stock.*", "products.product_code", "products.product_name", "products.sale_price", "users.name");
-
+                    ->leftJoin("products", "stock.product_id", "=", "products.product_id") ->leftJoin("users", "stock.user_id", "=", "users.id") ->select("stock.*", "products.product_code", "products.product_name", "products.sale_price", "users.name");
         if(!empty($search)){
-            $history = $history->orWhere([["products.product_code", "LIKE", "%".$search."%"], ["products.warehouse_id", $warehouse_id]])
-                        ->orWhere([["stock.stock_name", "LIKE", "%".$search."%"], ["products.warehouse_id", $warehouse_id]])
-                        ->orWhere([["products.product_name", "LIKE", "%".$search."%"], ["products.warehouse_id", $warehouse_id]]);
+
+            $history = $history->orWhere(function($query) use ($search) { $query->where("products.product_code", "LIKE", "%".$search."%")->orWhere("products.product_name", "LIKE", "%".$search."%"); })->where("products.warehouse_id", $warehouse_id);
         } else {
             $history = $history->where("products.warehouse_id", $warehouse_id);
         }
